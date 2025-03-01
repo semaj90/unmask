@@ -10,8 +10,8 @@ export default function Home() {
     <div className="relative overflow-hidden">
       <Particles
         className="absolute inset-0 z-50"
-        quantity={100}
-        ease={80}
+        quantity={1000}
+        ease={10}
         color={color}
         refresh
       />
