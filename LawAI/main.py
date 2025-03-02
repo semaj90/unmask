@@ -1,4 +1,4 @@
-#finalised integration of all 3 component
+# finalised integration of all 3 component
 import streamlit.components.v1 as components
 import streamlit as st 
 from phi.agent import Agent
@@ -247,9 +247,9 @@ if selected_bot == "Home":
         <p style="font-size: 1.2em; margin-bottom: 30px;">Your all-in-one solution for intelligent legal content analysis and assistance</p>
     </div>
     """, unsafe_allow_html=True)
-    
+
     col1, col2, col3= st.columns(3)
-    
+
     with col1:
         st.markdown("""
         <div class='tool-card'>
@@ -261,7 +261,7 @@ if selected_bot == "Home":
             </ul>
         </div>
         """, unsafe_allow_html=True)
-    
+
     with col2:
         st.markdown("""
         <div class='tool-card'>
@@ -289,7 +289,7 @@ if selected_bot == "Home":
 elif selected_bot == "Legal Video Analyzer":
     st.markdown("<h2 style='text-align: center;'>Legal Video Content Analyzer 🎥</h2>", unsafe_allow_html=True)
     multimodal_Agent = initialize_video_agent()
-    
+
     with st.container():
         video_file = st.file_uploader(
             "Upload a video file", type=['mp4', 'mov', 'avi'], 
@@ -345,7 +345,7 @@ elif selected_bot == "Legal Video Analyzer":
 elif selected_bot == "Legal Document Analyzer":
     st.markdown("<h2 style='text-align: center;'>Legal Document Content Analyzer 📄</h2>", unsafe_allow_html=True)
     multimodal_Agent = initialize_document_agent()
-    
+
     with st.container():
         document_file = st.file_uploader(
             "Upload a document file", type=['pdf', 'txt'], 
@@ -420,11 +420,11 @@ elif selected_bot == "Lawyer Matching":
             """Initialize LawyerMatcher with database and API configurations."""
             self.mongo_uri = mongo_uri
             self.gemini_api_key = gemini_api_key
-            
+
             # Configure Gemini
             genai.configure(api_key=gemini_api_key)
-            self.model = genai.GenerativeModel("gemini-pro")
-            
+            self.model = genai.GenerativeModel("gemini-2.0-flash")
+
             # Initialize MongoDB connection
             try:
                 self.client = MongoClient(mongo_uri)
@@ -495,13 +495,13 @@ elif selected_bot == "Lawyer Matching":
                 response_text = response.text.strip()
                 recommended_lawyer_name = response_text.split("Recommended Lawyer:")[1].split("Reasoning:")[0].strip()
                 reasoning = response_text.split("Reasoning:")[1].strip()
-                
+
                 # Find the lawyer's full details from the database
                 lawyer_doc = self.collection.find_one({"name": recommended_lawyer_name})
-                
+
                 if not lawyer_doc:
                     return None, "Could not find the recommended lawyer in the database."
-                    
+
                 result = {
                     "name": lawyer_doc["name"],
                     "experience": lawyer_doc["experience"],
@@ -510,7 +510,7 @@ elif selected_bot == "Lawyer Matching":
                     "reasoning": reasoning,
                     "id": str(lawyer_doc["_id"])
                 }
-                
+
                 return result, None
 
             except Exception as e:
@@ -525,7 +525,7 @@ elif selected_bot == "Lawyer Matching":
         #     layout="wide"
         # )
 
-        #st.markdown("<h2 style='text-align: center;'>Legal Case Lawyer Matcher ⚖️</h2>", unsafe_allow_html=True)
+        # st.markdown("<h2 style='text-align: center;'>Legal Case Lawyer Matcher ⚖️</h2>", unsafe_allow_html=True)
 
         # Dark theme CSS
         st.markdown("""
@@ -653,7 +653,6 @@ elif selected_bot == "Lawyer Matching":
             gemini_api_key=os.getenv("GOOGLE_API_KEY"),
         )
 
-
         if st.button("🔍 Find Best Lawyer Match", type="primary", key="search_button"):
             if len(case_description.strip()) < 20:
                 st.warning("⚠️ Please provide a more detailed case description (at least 20 characters)")
@@ -661,10 +660,10 @@ elif selected_bot == "Lawyer Matching":
 
             with st.spinner("🔄 Analyzing your case and finding the best match..."):
                 result, error = matcher.find_best_lawyer(case_description)
-                
+
                 if result:
                     st.markdown("### 🎯 Lawyer Recommendation")
-                    
+
                     # Display recommendation in a structured format
                     st.markdown(f"""
                     <div class="recommendation-box">
@@ -690,14 +689,13 @@ elif selected_bot == "Lawyer Matching":
                     if result and "image_uri" in result and result["image_uri"]:
                         st.image(result["image_uri"], caption=f"{result['name']}", width=250)
 
-                    
                     # Contact button
 
                     if "redirect" not in st.session_state:
                         st.session_state["redirect"] = False
 
                     col1, col2, col3 = st.columns([1, 2, 1])
-                    #redirecting button
+                    # redirecting button
                     with col2:
                         redirect_button(
                                 url=f"https://lawyer-hub-tau.vercel.app/lawyer/{result["id"]}",
