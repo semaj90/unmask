@@ -30,6 +30,7 @@ export default function RootLayout({
       <body className={`${roboto.className} antialiased text-white`}>
         <Toaster />
         <Navbar />
+
         <WalletContextProvider>{children}</WalletContextProvider>
       </body>
     </html>

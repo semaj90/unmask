@@ -7,6 +7,8 @@ import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { LoaderIcon } from "react-hot-toast";
+import { useSession } from "next-auth/react";
+import LawyerComment from "@/components/LawyerComment";
 
 export interface Report {
   _id: string;
@@ -20,6 +22,7 @@ export interface Report {
 
 const ReportDetails = () => {
   const { id } = useParams();
+  const { data: session } = useSession();
 
   const { isLoading, data: report } = useQuery({
     queryKey: ["report", { id }],
@@ -48,20 +51,23 @@ const ReportDetails = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-bl from-[#151515] via-[#292929] to-[#151515] py-6 px-8">
-      <div className="mt-12 justify-between gap-6 max-w-7xl mx-auto items-start flex">
-        <ReportDetailsComponent report={report} />
-        <div className="overflow-hidden">
-          <Image
-            className="w-full h-full"
-            src={report.image}
-            alt="Report Image"
-            width={360}
-            height={360}
-          />
+    <main className="min-h-screen bg-gradient-to-bl from-[#151515] via-[#292929] to-[#151515] py-6 px-8">
+      <div className="py-6 px-8 max-w-7xl mx-auto ">
+        <div className="mt-12 justify-between gap-6 items-start flex">
+          <ReportDetailsComponent report={report} />
+          <div className="overflow-hidden">
+            <Image
+              className="w-full h-full"
+              src={report.image}
+              alt="Report Image"
+              width={360}
+              height={360}
+            />
+          </div>
         </div>
+        {session && session.user && <LawyerComment />}
       </div>
-    </div>
+    </main>
   );
 };
 
