@@ -34,12 +34,15 @@ const PostContentForm = () => {
       fd.append("title", formData.title);
       fd.append("content", formData.content);
       fd.append("genre", formData.genre);
-      fd.append("lawyer", localStorage.getItem("currentLawyer") as string);
 
       const response = await axios.post("/api/advocate/post", fd);
       if (response.data.success) {
         qc.invalidateQueries({
           queryKey: ["lawyerPosts"],
+          exact: true,
+        });
+        qc.invalidateQueries({
+          queryKey: ["profilePosts"],
           exact: true,
         });
         setFormData({

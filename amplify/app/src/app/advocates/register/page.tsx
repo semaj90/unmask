@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import axios, { isAxiosError } from "axios";
 import { User, Lock, Mail, Phone, FileText, Briefcase } from "lucide-react"; // Icons for input fields
@@ -18,7 +18,6 @@ const SignupPage = () => {
   });
   const [error, setError] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
-  const [lawyer, setLawyer] = useState<string | null>(null);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -52,17 +51,6 @@ const SignupPage = () => {
       setLoading(false);
     }
   };
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const l = localStorage.getItem("currentLawyer");
-    if (l) setLawyer(l);
-  }, []);
-
-  useEffect(() => {
-    if (!lawyer) return;
-    router.replace("/advocates/post-content");
-  }, [lawyer]);
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-black via-gray-900 to-black text-white">

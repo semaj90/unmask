@@ -1,19 +1,25 @@
 import LawyerPost from "@/models/LawyerPost";
 import { connectDB } from "@/utils/dbTest";
-import { Types } from "mongoose";
+import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
+import { authOptions } from "../../auth/[...nextauth]/options";
 
 export async function POST(req: NextRequest) {
   await connectDB();
 
   try {
+    const session = await getServerSession(authOptions);
+
+    if (!session || !session.user._id) throw new Error("Lawyer not found");
+
+    const lawyerId = session.user._id;
     const fd = await req.formData();
 
     const lawyerPost = {
       title: fd.get("title") as string,
       content: fd.get("content") as string,
       genre: fd.get("genre") as string,
-      lawyer: new Types.ObjectId(fd.get("lawyer") as string),
+      lawyer: lawyerId,
     };
 
     if (!lawyerPost) {

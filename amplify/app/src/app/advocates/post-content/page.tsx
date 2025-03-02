@@ -1,24 +1,35 @@
+import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 import LawyerPostCard from "@/components/advocatePostCard";
-import PostContentForm from "@/components/createAdvocatePost";
+import { getServerSession } from "next-auth";
 import Link from "next/link";
 import React from "react";
 
-const AdvocatesDashboard = () => {
+const AdvocatesDashboard = async () => {
+  const session = await getServerSession(authOptions);
+
   return (
-    <div className="px-20">
-      <div className="flex justify-end bg-transparent">
-        <Link
-          className="px-4 py-2 border border-white rounded-md mt-6 mr-8"
-          href="/advocates/profile"
-        >
-          Profile
-        </Link>
-      </div>
-      <div className="relative min-h-screen flex flex-col-reverse lg:flex-row gap-4 justify-center py-6">
-        <LawyerPostCard />
-        <div className="w-full max-w-2xl text-white p-8 rounded-xl">
-          <PostContentForm />
+    <div className="px-4 md:px-6">
+      {session && session.user._id ? (
+        <div className="flex justify-end bg-transparent">
+          <Link
+            className="px-4 py-2 border border-white rounded-md mt-6 mr-8"
+            href="/advocates/profile"
+          >
+            Profile
+          </Link>
         </div>
+      ) : (
+        <div className="flex justify-end bg-transparent">
+          <Link
+            className="px-4 py-2 border border-white rounded-md mt-6 mr-8"
+            href="/advocates/login"
+          >
+            Sign In as Advocate
+          </Link>
+        </div>
+      )}
+      <div className="relative min-h-screen py-6">
+        <LawyerPostCard />
       </div>
     </div>
   );

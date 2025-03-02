@@ -1,17 +1,19 @@
+import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 import LawyerPost from "@/models/LawyerPost";
 import { connectDB } from "@/utils/dbTest";
 import { Types } from "mongoose";
-import { NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { NextResponse } from "next/server";
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   await connectDB();
 
   try {
-    const url = new URL(req.url);
+    const session = await getServerSession(authOptions);
 
-    const lawyerId = url.pathname.split("/").pop();
+    if (!session || !session.user._id) throw new Error("Lawyer not found");
 
-    if (!lawyerId) throw new Error("Lawyer ID not found");
+    const lawyerId = session.user._id;
 
     const lawyerPosts = await LawyerPost.aggregate([
       {
