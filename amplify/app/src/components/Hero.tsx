@@ -13,11 +13,12 @@ const Hero = () => {
       />*/}
       <section className="container pt-36 mx-auto px-4 py-20 text-center">
         <h1 className="text-5xl md:text-7xl font-bold mb-6">
-          Empower Change, Report Truth
+          Decentralized Q&A and Legal Assistance for Everyone
         </h1>
         <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto">
-          Join the decentralized movement to expose injustices and crimes. Your
-          voice matters, and it&apos;s secure on the blockchain.
+          Ask legal questions anonymously, connect with lawyers, analyze
+          documents, and hire legal experts—all on a secure, blockchain-powered
+          platform.
         </p>
         <div className="flex justify-center">
           <WalletConnectButton />
