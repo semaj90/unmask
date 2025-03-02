@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import ReportDetailsComponent from "@/components/Report";
@@ -34,6 +35,15 @@ const ReportDetails = () => {
     staleTime: 1000 * 60 * 5,
   });
 
+  const { data: comments, isLoading: commentsLoading } = useQuery({
+    queryKey: ["lawyerComments", { id }],
+    queryFn: async () => {
+      const response = await axios.get(`/api/advocate/comment/${id}`);
+      return response.data.comments;
+    },
+    staleTime: 1000 * 60 * 5,
+  });
+
   if (isLoading) {
     return (
       <div>
@@ -65,7 +75,32 @@ const ReportDetails = () => {
             />
           </div>
         </div>
-        {session && session.user && <LawyerComment />}
+        {id && session && session.user && <LawyerComment id={id as string} />}
+        <div className="my-10">
+          {commentsLoading && (
+            <div className="flex justify-center">
+              <LoaderIcon className="size-4 text-white animate-spin" />
+            </div>
+          )}
+          <p className="text-white  text-2xl font-medium underline underline-offset-8">
+            Comments: {comments?.length}
+          </p>
+          <div>
+            {comments?.map((comment: any) => {
+              return (
+                <div key={comment._id} className="my-4">
+                  <p className="font-medium text-xl">{comment.comment}</p>
+                  <p className="text-sm text-red-500">
+                    Commented by:{" "}
+                    <span className="text-white">
+                      {comment.lawyerDetails.name}
+                    </span>
+                  </p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
       </div>
     </main>
   );
