@@ -698,7 +698,7 @@ elif selected_bot == "Lawyer Matching":
                     # redirecting button
                     with col2:
                         redirect_button(
-                                url=f"https://lawyer-hub-tau.vercel.app/lawyer/{result["id"]}",
+                            url=f"https://unmask.live/lawyer/{result["id"]}",
                         )
 
                     # Add timestamp
