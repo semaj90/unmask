@@ -8,7 +8,6 @@ import Image from "next/image";
 
 const navLinks = [
   { name: "Home", path: "/home" },
-  { name: "Services", path: "#services" },
   { name: "Advocates", path: "/all-lawyers" },
   { name: "Learn", path: "/learn" },
 ];
@@ -61,7 +60,7 @@ const Navbar = () => {
           <li>
             <Link
               className="block px-4 py-2 rounded transition-all duration-300 hover:bg-gray-800"
-              href={"https://tjp-lawai.streamlit.app"}
+              href={"https://unmask-agents.streamlit.app"}
               target="_blank"
             >
               Agents
