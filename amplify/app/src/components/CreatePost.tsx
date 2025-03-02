@@ -26,14 +26,16 @@ const CreatePost = () => {
     setIsConnected,
   } = useContext(WalletContext);
   const [loading, setLoading] = useState<boolean>(false);
+
   const qc = useQueryClient();
 
   async function uploadImageToPinata() {
-    if (!image) return;
+    if (!image) return null;
     try {
       const fd = new FormData();
       fd.append("file", image as Blob);
       const uploadPromise = uploadFileToIPFS(fd);
+
       toast.promise(uploadPromise, {
         loading: "Uploading Image...",
         success: "Image Uploaded Successfully",
@@ -41,9 +43,7 @@ const CreatePost = () => {
       });
 
       const response = await uploadPromise;
-      if (response.success === true) {
-        return response.pinataURL as string;
-      }
+      return response.success ? response.pinataURL : null;
     } catch {
       toast.error("Error uploading image");
       return null;
@@ -53,11 +53,11 @@ const CreatePost = () => {
   async function uploadMetadataToIPFS() {
     if (!title || !content || !image) {
       toast.error("Title and Content are required");
-      return;
+      return null;
     }
 
     const imageFileUrl = await uploadImageToPinata();
-    if (!imageFileUrl) return;
+    if (!imageFileUrl) return null;
 
     const nftJSON = {
       name: title,
@@ -68,24 +68,36 @@ const CreatePost = () => {
 
     try {
       const response = await uploadJSONToIPFS(nftJSON);
-      if (response.success === true) {
-        const fd = new FormData();
-
-        fd.append("description", content);
-        fd.append("image", imageFileUrl);
-        fd.append("name", title);
-        if (userAddress) {
-          fd.append("reportedBy", userAddress);
-        }
-        const res = await axios.post("/api/report", fd);
-
-        if (res.data.success) {
-          //toast.success("Report created successfully");
-          return response.pinataURL;
-        }
-      }
+      return response.success ? response.pinataURL : null;
     } catch (e) {
       console.log("Error uploading JSON metadata: ", e);
+      return null;
+    }
+  }
+
+  async function reportNFT(metadataURL: string) {
+    try {
+      // Fetch the metadata JSON from IPFS
+      const response = await fetch(metadataURL);
+      const metadata = await response.json(); // Parse JSON
+
+      if (!metadata.image) {
+        toast.error("Invalid metadata: No image URL found");
+        return;
+      }
+
+      const fd = new FormData();
+      fd.append("description", content);
+      fd.append("image", metadata.image); // Save the actual image URL
+      fd.append("name", title);
+      if (userAddress) {
+        fd.append("reportedBy", userAddress);
+      }
+
+      await axios.post("/api/report", fd);
+    } catch (e) {
+      console.log("Error fetching metadata or reporting NFT: ", e);
+      toast.error("Failed to report NFT");
     }
   }
 
@@ -97,10 +109,7 @@ const CreatePost = () => {
     try {
       setLoading(true);
       const res = await axios.post("/api/check-content", fd);
-
-      if (res.data.success) {
-        return res.data.result;
-      }
+      return res.data.success ? res.data.result : null;
     } catch {
       return null;
     } finally {
@@ -135,6 +144,7 @@ const CreatePost = () => {
       });
 
       const metadataURL = await metadataURLPromise;
+      if (!metadataURL) return;
 
       const contract = new ethers.Contract(
         marketplace.address,
@@ -153,10 +163,15 @@ const CreatePost = () => {
       await transaction.wait();
 
       toast.success("NFT Listed Successfully");
+
+      // Call reportNFT after NFT is listed
+      await reportNFT(metadataURL);
+
       qc.invalidateQueries({
         queryKey: ["reports"],
         exact: true,
       });
+
       setTitle("");
       setContent("");
       setImage(null);
