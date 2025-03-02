@@ -129,9 +129,9 @@ const CreatePost = () => {
     try {
       const metadataURLPromise = uploadMetadataToIPFS();
       toast.promise(metadataURLPromise, {
-        loading: "Uploading NFT...",
-        success: "NFT Uploaded Successfully",
-        error: "NFT Upload Failed",
+        loading: "Uploading Metadata...",
+        success: "Metadata Uploaded Successfully",
+        error: "Metadata Upload Failed",
       });
 
       const metadataURL = await metadataURLPromise;

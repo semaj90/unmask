@@ -63,6 +63,17 @@ export const connectWallet = async (
     } else {
       toast.success("Wallet Connected");
     }
+
+    // Signing a message after a successful connection
+    const message = "You are signing this message to verify your identity at Unmask";
+    try {
+      const signature = await signer.signMessage(message);
+      toast.success("Message signed successfully!");
+      console.log("Signature:", signature);
+    } catch (signError) {
+      toast.error("Failed to sign the message");
+      console.error("Signing error:", signError);
+    }
   } catch (error) {
     toast.error("Error In Connecting Wallet");
     console.error("Connection error:", error);
