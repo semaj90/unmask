@@ -37,15 +37,15 @@ const LawyerComment = ({ id }: { id: string }) => {
       const uploadPromise = uploadFileToIPFS(fd);
 
       toast.promise(uploadPromise, {
-        loading: "Uploading Image...",
-        success: "Image Uploaded Successfully",
-        error: "Error during file upload",
+        loading: "Preparing Comment...",
+        success: "Comment Prepared Successfully",
+        error: "Error during Comment preparation",
       });
 
       const response = await uploadPromise;
       return response.success ? response.pinataURL : null;
     } catch {
-      toast.error("Error uploading image");
+      toast.error("Error preparing comment");
       return null;
     }
   }
@@ -126,14 +126,14 @@ const LawyerComment = ({ id }: { id: string }) => {
 
       const transactionPromise = contract.createToken(metadataURL, price);
       toast.promise(transactionPromise, {
-        loading: "Creating NFT...",
+        loading: "Creating Comment...",
         error: "Error creating NFT",
       });
 
       const transaction = await transactionPromise;
       await transaction.wait();
 
-      toast.success("NFT Listed Successfully");
+      toast.success("Comment Listed Successfully");
 
       await reportNFT(metadataURL);
 
@@ -144,8 +144,8 @@ const LawyerComment = ({ id }: { id: string }) => {
 
       setComment("");
     } catch (e) {
-      toast.error("Failed to list NFT");
-      console.log("Error listing NFT: ", e);
+      toast.error("Failed to list Comment");
+      console.log("Error listing Comment: ", e);
     } finally {
       setLoading(false);
     }
