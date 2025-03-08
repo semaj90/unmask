@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import axios from "axios";
 import { User } from "lucide-react"; // Importing icons
-import Link from "next/link";
+// import Link from "next/link";
 
 export interface Lawyer {
   _id: string;
@@ -69,7 +69,7 @@ const LawyerPage = () => {
                 </span>
               </p>
             </div>
-            <div className="text-white mt-3 flex justify-between items-center bg-gray-800 px-6 py-3 rounded-lg shadow-md mb-4 border border-[#C0C0C0]">
+            {/* <div className="text-white mt-3 flex justify-between items-center bg-gray-800 px-6 py-3 rounded-lg shadow-md mb-4 border border-[#C0C0C0]">
               <p className="font-medium">
                 <strong className="text-[#C0C0C0]">Call:</strong> {lawyer.phone}
               </p>
@@ -82,13 +82,20 @@ const LawyerPage = () => {
                   {lawyer.email}
                 </Link>
               </p>
-            </div>
+            </div> */}
+            
 
             <p className="mt-4 text-white bg-gray-800 px-6 py-3 rounded-lg shadow-md border border-[#C0C0C0]">
               <strong className="text-[#C0C0C0]">Description:</strong>{" "}
               {lawyer.description}
             </p>
+            <div className="text-white mt-3 hover:scale-105 flex justify-center items-center bg-gray-800 px-6 py-3 rounded-lg shadow-md mb-4 border border-[#C0C0C0]">
+              <p className="font-medium">
+                <button>Connect Lawyer</button>
+              </p>
+            </div>
           </div>
+          
         ) : (
           <div className="mt-6 text-center text-[#C0C0C0]">
             <svg
